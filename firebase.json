@@ -1,0 +1,8 @@
+{
+  "firestore": {
+    "databaseId": "ai-studio-personaltriplogg-3b4d707c-5bb3-4db2-833b-8dd56b00854c",
+    "rules": "firestore.rules",
+    "edition": "ENTERPRISE",
+    "dataAccessMode": "FIRESTORE_NATIVE"
+  }
+}

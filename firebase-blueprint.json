@@ -1,0 +1,183 @@
+{
+  "entities": {
+    "Trip": {
+      "title": "Trip",
+      "description": "A logged air flight or road trip with route coordinates, carrier metadata, distance metrics, memory journal entries, and highlight photos.",
+      "type": "object",
+      "properties": {
+        "ownerId": {
+          "type": "string",
+          "description": "UID of the authenticated user who owns this trip log.",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "tripType": {
+          "type": "string",
+          "description": "Mode of travel: flight or roadtrip.",
+          "enum": ["flight", "roadtrip"],
+          "minLength": 6,
+          "maxLength": 20
+        },
+        "originCode": {
+          "type": "string",
+          "description": "Origin IATA airport code or city code.",
+          "minLength": 2,
+          "maxLength": 16
+        },
+        "originCity": {
+          "type": "string",
+          "description": "Origin city name.",
+          "minLength": 1,
+          "maxLength": 100
+        },
+        "originCountry": {
+          "type": "string",
+          "description": "Origin country name.",
+          "minLength": 1,
+          "maxLength": 100
+        },
+        "originContinent": {
+          "type": "string",
+          "description": "Origin continent name.",
+          "minLength": 1,
+          "maxLength": 60
+        },
+        "originLat": {
+          "type": "number",
+          "description": "Origin latitude (-90 to 90)."
+        },
+        "originLng": {
+          "type": "number",
+          "description": "Origin longitude (-180 to 180)."
+        },
+        "destCode": {
+          "type": "string",
+          "description": "Destination IATA airport code or city code.",
+          "minLength": 2,
+          "maxLength": 16
+        },
+        "destCity": {
+          "type": "string",
+          "description": "Destination city name.",
+          "minLength": 1,
+          "maxLength": 100
+        },
+        "destCountry": {
+          "type": "string",
+          "description": "Destination country name.",
+          "minLength": 1,
+          "maxLength": 100
+        },
+        "destContinent": {
+          "type": "string",
+          "description": "Destination continent name.",
+          "minLength": 1,
+          "maxLength": 60
+        },
+        "destLat": {
+          "type": "number",
+          "description": "Destination latitude (-90 to 90)."
+        },
+        "destLng": {
+          "type": "number",
+          "description": "Destination longitude (-180 to 180)."
+        },
+        "carrierName": {
+          "type": "string",
+          "description": "Airline name for flights or vehicle/highway route name for road trips.",
+          "minLength": 1,
+          "maxLength": 100
+        },
+        "equipmentType": {
+          "type": "string",
+          "description": "Aircraft model (e.g., Boeing 777-300ER) or vehicle category.",
+          "minLength": 1,
+          "maxLength": 100
+        },
+        "routeNumber": {
+          "type": "string",
+          "description": "Flight number (e.g., NH 107) or highway route number.",
+          "minLength": 1,
+          "maxLength": 40
+        },
+        "travelDate": {
+          "type": "string",
+          "description": "Date of travel in YYYY-MM-DD format.",
+          "minLength": 10,
+          "maxLength": 20,
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+        },
+        "distanceMiles": {
+          "type": "number",
+          "description": "Calculated geodesic or road distance in statute miles."
+        },
+        "durationHours": {
+          "type": "number",
+          "description": "Trip duration in hours."
+        },
+        "goodMemories": {
+          "type": "string",
+          "description": "Highlights, favorite meals, and positive memories from the journey.",
+          "minLength": 0,
+          "maxLength": 2000
+        },
+        "badMemories": {
+          "type": "string",
+          "description": "Challenges, delays, weather issues, or lessons learned.",
+          "minLength": 0,
+          "maxLength": 2000
+        },
+        "photos": {
+          "type": "array",
+          "description": "Up to 4 highlight photo data URLs or image paths."
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server timestamp when the trip was created."
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server timestamp when the trip was last updated."
+        }
+      },
+      "required": [
+        "ownerId",
+        "tripType",
+        "originCode",
+        "originCity",
+        "originCountry",
+        "originContinent",
+        "originLat",
+        "originLng",
+        "destCode",
+        "destCity",
+        "destCountry",
+        "destContinent",
+        "destLat",
+        "destLng",
+        "carrierName",
+        "equipmentType",
+        "routeNumber",
+        "travelDate",
+        "distanceMiles",
+        "durationHours",
+        "goodMemories",
+        "badMemories",
+        "photos",
+        "createdAt",
+        "updatedAt"
+      ]
+    }
+  },
+  "firestore": {
+    "/trips/{tripId}": {
+      "schema": {
+        "$ref": "#/entities/Trip"
+      },
+      "description": "Stores personal flight and road trip logs owned by individual authenticated users."
+    }
+  }
+}

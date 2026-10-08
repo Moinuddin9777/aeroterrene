@@ -1,0 +1,214 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // 1. Global Safety Net: Default-deny catch-all
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Global Hardened Primitives
+    function isValidId(id) {
+      return id is string && id.size() >= 1 && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function incoming() {
+      return request.resource.data;
+    }
+
+    function existing() {
+      return resource.data;
+    }
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isVerifiedUser() {
+      return isSignedIn() && request.auth.token.email_verified == true;
+    }
+
+    // Validation Blueprint for Trip entity
+    function isValidTrip(data) {
+      return data.keys().hasAll([
+        'ownerId',
+        'tripType',
+        'originCode',
+        'originCity',
+        'originCountry',
+        'originContinent',
+        'originLat',
+        'originLng',
+        'destCode',
+        'destCity',
+        'destCountry',
+        'destContinent',
+        'destLat',
+        'destLng',
+        'carrierName',
+        'equipmentType',
+        'routeNumber',
+        'travelDate',
+        'distanceMiles',
+        'durationHours',
+        'goodMemories',
+        'badMemories',
+        'photos',
+        'createdAt',
+        'updatedAt'
+      ]) &&
+      data.keys().hasOnly([
+        'ownerId',
+        'tripType',
+        'originCode',
+        'originCity',
+        'originCountry',
+        'originContinent',
+        'originLat',
+        'originLng',
+        'destCode',
+        'destCity',
+        'destCountry',
+        'destContinent',
+        'destLat',
+        'destLng',
+        'carrierName',
+        'equipmentType',
+        'routeNumber',
+        'travelDate',
+        'distanceMiles',
+        'durationHours',
+        'goodMemories',
+        'badMemories',
+        'photos',
+        'createdAt',
+        'updatedAt'
+      ]) &&
+      data.ownerId is string &&
+      data.ownerId.size() >= 1 &&
+      data.ownerId.size() <= 128 &&
+      data.ownerId.matches('^[a-zA-Z0-9_\\-]+$') &&
+      data.ownerId == request.auth.uid &&
+      data.tripType is string &&
+      data.tripType.size() >= 6 &&
+      data.tripType.size() <= 20 &&
+      (data.tripType == 'flight' || data.tripType == 'roadtrip') &&
+      data.originCode is string &&
+      data.originCode.size() >= 2 &&
+      data.originCode.size() <= 16 &&
+      data.originCity is string &&
+      data.originCity.size() >= 1 &&
+      data.originCity.size() <= 100 &&
+      data.originCountry is string &&
+      data.originCountry.size() >= 1 &&
+      data.originCountry.size() <= 100 &&
+      data.originContinent is string &&
+      data.originContinent.size() >= 1 &&
+      data.originContinent.size() <= 60 &&
+      data.originLat is number &&
+      data.originLat >= -90 &&
+      data.originLat <= 90 &&
+      data.originLng is number &&
+      data.originLng >= -180 &&
+      data.originLng <= 180 &&
+      data.destCode is string &&
+      data.destCode.size() >= 2 &&
+      data.destCode.size() <= 16 &&
+      data.destCity is string &&
+      data.destCity.size() >= 1 &&
+      data.destCity.size() <= 100 &&
+      data.destCountry is string &&
+      data.destCountry.size() >= 1 &&
+      data.destCountry.size() <= 100 &&
+      data.destContinent is string &&
+      data.destContinent.size() >= 1 &&
+      data.destContinent.size() <= 60 &&
+      data.destLat is number &&
+      data.destLat >= -90 &&
+      data.destLat <= 90 &&
+      data.destLng is number &&
+      data.destLng >= -180 &&
+      data.destLng <= 180 &&
+      data.carrierName is string &&
+      data.carrierName.size() >= 1 &&
+      data.carrierName.size() <= 100 &&
+      data.equipmentType is string &&
+      data.equipmentType.size() >= 1 &&
+      data.equipmentType.size() <= 100 &&
+      data.routeNumber is string &&
+      data.routeNumber.size() >= 1 &&
+      data.routeNumber.size() <= 40 &&
+      data.travelDate is string &&
+      data.travelDate.size() >= 10 &&
+      data.travelDate.size() <= 20 &&
+      data.travelDate.matches('^\\d{4}-\\d{2}-\\d{2}$') &&
+      data.distanceMiles is number &&
+      data.distanceMiles >= 0 &&
+      data.distanceMiles <= 50000 &&
+      data.durationHours is number &&
+      data.durationHours >= 0 &&
+      data.durationHours <= 1000 &&
+      data.goodMemories is string &&
+      data.goodMemories.size() <= 2000 &&
+      data.badMemories is string &&
+      data.badMemories.size() <= 2000 &&
+      data.photos is list &&
+      data.photos.size() <= 4 &&
+      (data.photos.size() == 0 || (data.photos[0] is string && data.photos[0].size() <= 150000)) &&
+      data.createdAt is timestamp &&
+      data.updatedAt is timestamp;
+    }
+
+    match /trips/{tripId} {
+      allow get: if isSignedIn() && isValidId(tripId) && existing().ownerId == request.auth.uid;
+
+      allow list: if isSignedIn() && resource.data.ownerId == request.auth.uid;
+
+      allow create: if isVerifiedUser() &&
+        isValidId(tripId) &&
+        isValidTrip(incoming()) &&
+        incoming().createdAt == request.time &&
+        incoming().updatedAt == request.time;
+
+      allow update: if isVerifiedUser() &&
+        isValidId(tripId) &&
+        isValidTrip(incoming()) &&
+        existing().ownerId == request.auth.uid &&
+        incoming().ownerId == existing().ownerId &&
+        incoming().createdAt == existing().createdAt &&
+        incoming().updatedAt == request.time &&
+        (
+          // Action: Edit trip details, memories, or highlight photos
+          incoming().diff(existing()).affectedKeys().hasOnly([
+            'tripType',
+            'originCode',
+            'originCity',
+            'originCountry',
+            'originContinent',
+            'originLat',
+            'originLng',
+            'destCode',
+            'destCity',
+            'destCountry',
+            'destContinent',
+            'destLat',
+            'destLng',
+            'carrierName',
+            'equipmentType',
+            'routeNumber',
+            'travelDate',
+            'distanceMiles',
+            'durationHours',
+            'goodMemories',
+            'badMemories',
+            'photos',
+            'updatedAt'
+          ])
+        );
+
+      allow delete: if isVerifiedUser() &&
+        isValidId(tripId) &&
+        existing().ownerId == request.auth.uid;
+    }
+  }
+}
