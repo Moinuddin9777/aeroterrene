@@ -1,77 +1,127 @@
 # AeroTerrene ✈️🌍
 
-> **A 100% free, privacy-first travel logger featuring an interactive 3D globe with animated flight paths, detailed map views, passport stamps, and personal travel analytics.**
+> **A 100% free, privacy-first travel logger featuring an interactive 3D globe with animated flight paths, detailed 2D map views, digital passport stamps, and personal travel analytics.**
 
 ---
 
-### Why AeroTerrene?
+## 💡 Why did I build this?
 
-Most travel logging apps on the market charge expensive monthly subscriptions or hide basic features behind paywalls just to let you log your trips. **AeroTerrene was built to change that.** 
+> *"Flightly paise maang raha tha yaar :("*
 
-It is completely **free** and open-source, giving you full access to rich travel tracking tools without subscription fees or locked features.
+Most travel logging apps (like Flightly or App in the Air) charge expensive monthly subscriptions or lock basic features like flight path rendering and map logs behind paywalls just to let you record your own journeys. **AeroTerrene was built to fix that.**
 
----
+AeroTerrene is **100% free and open-source**, giving you full access to rich travel tracking tools without subscription fees, ads, or locked features.
 
-## Key Features
-
-- 🌐 **Interactive 3D Globe**: Visualize all your journeys around the world on an interactive 3D globe rendered with real-time flight paths, arc animations, and waypoint markers.
-- 🗺️ **Interactive Travel Map**: Switch to detailed map views powered by Leaflet to explore specific routes, stops, and location data.
-- 🛫 **Smart Trip Logger**: Log flights, road trips, and journeys with automated coordinate geocoding, multi-stop itineraries, travel modes, and memory journaling.
-- 🛂 **Digital Passport & Stamps**: Track visited countries, collect digital passport stamps, and showcase your travel milestones.
-- 📊 **Travel Analytics**: View insights into total distance covered, countries visited, favorite transit modes, and travel habits.
-- 🌙 **Dark & Light Mode**: Sleek, modern design optimized for both day and night viewing.
+Made with ❤️ by Moin.
 
 ---
 
-## Tech Stack
+## ✨ Key Features
 
-- **Frontend**: React 19, TypeScript, Vite, Tailwind CSS
-- **Visualization**: Three.js (3D Globe & Arcs), Leaflet (2D Maps), Lucide Icons, Framer Motion
-- **Backend & Storage**: Firebase Authentication, Cloud Firestore
-- **AI Integration**: Google GenAI / Gemini API
+- 🌐 **Interactive 3D Globe**: Render your entire journey history across the world on an interactive 3D globe with animated flight arcs, customizable rotation, camera controls, and interactive airport waypoints.
+- 🗺️ **Detailed 2D Travel Map**: Switch seamlessly to high-performance 2D maps powered by Leaflet to explore precise itineraries, flight segments, and road trips.
+- 🛫 **Comprehensive Trip Logger**: Easily log flights, road trips, and travel memories with multi-stop routes, auto-geocoding, transit mode selection, and trip notes.
+- 🛂 **Digital Passport & Stamps**: Collect auto-generated digital passport stamps for every country you visit and track your travel milestones.
+- 📊 **Travel Analytics**: Gain insights into total distance traveled, top visited countries, transport preferences, and yearly logs.
+- 🌙 **Dark & Light Modes**: Beautiful, modern UI engineered for crisp viewing in both light and dark themes.
 
 ---
 
-## Getting Started
+## 🛠️ Tech Stack
 
-### Prerequisites
+- **Framework**: React 19, TypeScript, Vite
+- **Styling**: Tailwind CSS
+- **3D & Maps**: Three.js (3D Globe & Flight Arcs), Leaflet & Carto (2D Maps)
+- **Icons & Animation**: Lucide Icons, Framer Motion, Anime.js
+- **Backend & Auth**: Firebase (Authentication & Cloud Firestore)
+- **AI Integration**: Google Gemini API (`@google/genai`)
 
-- [Node.js](https://nodejs.org/) (v18 or higher recommended)
+---
+
+## 🚀 Getting Started
+
+### 1. Prerequisites
+
+Make sure you have the following installed on your machine:
+- [Node.js](https://nodejs.org/) (v18.0.0 or higher recommended)
 - `npm` or `bun`
 
-### Installation & Setup
+### 2. Installation
 
-1. **Clone the repository**:
-   ```bash
-   git clone https://github.com/Moinuddin9777/aeroterrene.git
-   cd aeroterrene
-   ```
+Clone the repository and install dependencies:
 
-2. **Install dependencies**:
-   ```bash
-   npm install
-   ```
+```bash
+# Clone the repository
+git clone https://github.com/Moinuddin9777/aeroterrene.git
 
-3. **Configure Environment Variables**:
-   Create a `.env.local` file in the root directory and add your keys:
-   ```env
-   GEMINI_API_KEY=your_gemini_api_key_here
-   ```
+# Navigate into project directory
+cd aeroterrene
 
-4. **Run the development server**:
-   ```bash
-   npm run dev
-   ```
-   Open `http://localhost:3000` in your browser to view the application.
+# Install dependencies
+npm install
+```
+
+### 3. Environment Variables Configuration
+
+Copy the example environment file to create `.env.local`:
+
+```bash
+cp .env.example .env.local
+```
+
+Open `.env.local` in your editor and fill in your keys:
+
+```env
+# Firebase Credentials (Required for Auth & Cloud Firestore sync)
+VITE_FIREBASE_API_KEY=your_firebase_api_key
+VITE_FIREBASE_AUTH_DOMAIN=your_project.firebaseapp.com
+VITE_FIREBASE_PROJECT_ID=your_project_id
+VITE_FIREBASE_STORAGE_BUCKET=your_project.appspot.com
+VITE_FIREBASE_MESSAGING_SENDER_ID=your_messaging_sender_id
+VITE_FIREBASE_APP_ID=your_app_id
+VITE_FIREBASE_FIRESTORE_DATABASE_ID=(default)
+
+# Map Tile API Key (Optional: for Carto custom basemaps)
+VITE_CARTO_API_KEY=your_carto_api_key
+
+# Google Gemini API Key (For AI travel summary features)
+GEMINI_API_KEY=your_gemini_api_key
+```
+
+> **Note**: For local offline testing without Firebase, demo mock data can be loaded directly from the UI.
+
+### 4. Run Development Server
+
+Start the Vite development server:
+
+```bash
+npm run dev
+```
+
+Open [http://localhost:3000](http://localhost:3000) in your browser to start logging your journeys!
+
+### 5. Build for Production
+
+To create an optimized production build:
+
+```bash
+npm run build
+```
+
+Preview the production build locally:
+
+```bash
+npm run preview
+```
 
 ---
 
-## License
+## 🤝 Contributing
 
-Distributed under the MIT License. Feel free to use, modify, and contribute!
+Contributions are welcome! Please check out the [CONTRIBUTING.md](CONTRIBUTING.md) guide for details on how to set up your environment, report issues, and submit pull requests.
 
-## Why did I build this?
+---
 
-Flightly paise maang raha tha yaar :(
+## 📄 License
 
-Made with love using Google AI Studio by Moin ❤️
+Distributed under the **MIT License**. Free to use, modify, and distribute.
